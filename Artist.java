@@ -1,52 +1,38 @@
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Timer;
 
 // I was going to call this class drawer or visualiser, but I decided to name it artist instead.
 public class Artist {
-    private ArrayList<SpiroVector> vectorList = new ArrayList<>();
+    private SpiroVector vector;
     private double theta = 0;
 
     public void incrementTheta(){
-        theta += 0.01;
+        theta += 0.02;
     }
 
-    public static void main(String[] args) {
-        Artist artist = new Artist();
-        boolean exit = false;
+    public boolean initiateVectors() {
         Scanner scanner = new Scanner(System.in);
-        while (true) {
+        while (true){
             if (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line.equals("!exit")) {
-                    break;
-                } else if (line.equals("!calculate")) {
-                    while (true) {
-                        double x = 0;
-                        double y = 0;
-                        for (SpiroVector vector : artist.vectorList) {
-                            double[] posVector = vector.calculateVector(artist.theta);
-                            x += posVector[0];
-                            y += posVector[1];
-                        }
-                        System.out.print(x);
-                        System.out.print(" ");
-                        System.out.println(y);
-                        artist.incrementTheta();
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-
-
-                    }
+                    return true;
                 }
                 String[] stuff = line.split(" ");
-                artist.vectorList.add(new SpiroVector(Double.parseDouble(stuff[0]), Double.parseDouble(stuff[1]), Double.parseDouble(stuff[2])));
+                addVector(Double.parseDouble(stuff[0]), Double.parseDouble(stuff[1]), Double.parseDouble(stuff[2]));
+                break;
             }
         }
+        return false;
     }
 
+     public void addVector(double ro, double rt, double offset) {
+         vector = new SpiroVector(ro, rt, offset);
+     }
 
+    public double[] calculate() {
+        incrementTheta();
+        return vector.calculateVector(theta);
+    }
 }
