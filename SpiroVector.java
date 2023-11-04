@@ -1,29 +1,17 @@
 public class SpiroVector {
-    private double r;
-    private double thetaCoefficient;
-    private double startPos;
+    private double ro;
+    private double rt;
+    private double offset;
 
-    public SpiroVector(double r, double thetaCoefficient, double startPos) {
-        this.r = r;
-        this.thetaCoefficient = thetaCoefficient;
-        this.startPos = startPos;
+    public SpiroVector(double ro , double rt, double offset) {
+        this.ro = ro;
+        this.rt = rt;
+        this.offset = offset;
     }
 
     public double[] calculateVector(double theta) {
-        double x = r * Math.cos(startPos * Math.PI + thetaCoefficient * theta);
-        double y = r * Math.sin(startPos * Math.PI + thetaCoefficient * theta);
+        double x = (ro-rt)*Math.cos(theta) + offset * Math.cos(((ro-rt)/rt)*theta);
+        double y = (ro-rt)*Math.sin(theta) - offset * Math.sin(((ro-rt)/rt)*theta);
         return new double[]{x, y};
-    }
-
-    public void setR(float r) {
-        this.r = r;
-    }
-
-    public void setThetaCoefficient(double thetaCoefficient) {
-        this.thetaCoefficient = thetaCoefficient;
-    }
-
-    public void setStartPos(double startPos) {
-        this.startPos = startPos;
     }
 }
