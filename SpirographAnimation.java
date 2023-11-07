@@ -7,13 +7,12 @@ import java.util.*;
 import java.util.List;
 
 public class SpirographAnimation extends JPanel implements ActionListener {
-    private double t = 0;
     private Timer timer;
     private HashMap<Artist, List<Point>> spiroToTrailMap = new HashMap<>();
 
     public SpirographAnimation() {
         setSpiro();
-        timer = new Timer(1, this); // 1ms delay for animation
+        timer = new Timer(0, this); // 1ms delay for animation
         timer.start();
     }
 
@@ -34,27 +33,30 @@ public class SpirographAnimation extends JPanel implements ActionListener {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
 
-        // Calculate point using a parametric equation (x, y) = (cos(t), sin(t))
         for (Artist artist : spiroToTrailMap.keySet()) {
             double[] xyCord = artist.calculate();
             int x = (int) (centerX + xyCord[0]);
             int y = (int) (centerY + xyCord[1]);
+
+            // Get the trail for the current artist
+            List<Point> trail = spiroToTrailMap.get(artist);
+
             // Add the current position to the trail
-            spiroToTrailMap.get(artist).add(new Point(x, y));
-            // Draw the trail
-            g.setColor(Color.BLACK);
-            for (Point point : spiroToTrailMap.get(artist)) {
-                g.fillOval(point.x - 2, point.y - 2, 4, 4);
-                // Draw the circle at the current position
-                g.setColor(Color.RED);
-                g.fillOval(x - 5, y - 5, 10, 10);
+            if (artist.getRepeatUntil() > artist.getTheta()) { // optimisation my beloved
+                trail.add(new Point(x, y));
             }
+
+            // Draw the trail and the circle
+            g.setColor(artist.getColour());
+            for (Point point : trail) {
+                g.fillOval(point.x - 2, point.y - 2, 4, 4);
+            }
+            g.fillOval(x - 5, y - 5, 10, 10);
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        t += 0.05; // Increment the parameter for animation
         repaint();
     }
 
